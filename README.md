@@ -1,4 +1,5 @@
 # tweetux
+```
 usage: tweetux.py [-h] -p PATH_CREDS_FILE [-f] [-l LIST_NAMES] [-t TWEET_TEXT]
                   [-R RETWEET_FOLLOW] [-r RETWEET_USER]
 
@@ -20,3 +21,4 @@ optional arguments:
                         Retweet specific user
 
 tweetux.py -p -r/f/l/R/r
+```
