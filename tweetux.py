@@ -1,17 +1,3 @@
-#############################################################################
-## Copyleft (.) Dic 2017                                                   ##
-## silvinux7@gmail.com                                                     ##
-#############################################################################
-## This program is free software; you can redistribute it and/or modify    ##
-## it under the terms of the GNU General Public License as published by    ##
-## the Free Software Foundation; either version 3 of the License, or       ##
-## (at your option) any later version.                                     ##
-##                                                                         ##
-## This program is distributed in the hope that it will be useful,         ##
-## but WITHOUT ANY WARRANTY; without even the implied warranty of          ##
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           ##
-## GNU General Public License for more details.                            ##
-#############################################################################
 #!/usr/bin/env python
 import os, sys, time
 import json
@@ -22,15 +8,16 @@ import argparse
 def get_args():
     """"""
     parser = argparse.ArgumentParser(
-        description="Twitter Helper App - @silvinux",
-        epilog="tweetux.py -p -r/f/l/R/r "
+        description="Twitter Helper",
+        epilog="tweetux.py -p authfile.txt -r/F/f/l/R/r "
     )
 
     # required argument
     parser.add_argument('-p', '--path-creds-file', action="store", required=True, help='Path to credential file') 
     # optional arguments
     parser.add_argument('-f', '--follow-new-followers', help='Auto follow new followers', action='store_true')
-    parser.add_argument('-l', '--list-names', help='delimited list inputi, MUST BE comma (,) separated', type=str)
+    parser.add_argument('-F', '--follow-user', help='Follow user', type=str)
+    parser.add_argument('-l', '--list-id-screenname', help='Get ID username from a list. Input MUST BE comma (,) separated', type=str)
     parser.add_argument('-t', '--tweet-text', help='Tweet from command line', type=str)
     parser.add_argument('-R', '--retweet-follow', help='Retweet some topic and follow', type=str)
     parser.add_argument('-r', '--retweet-user', help='Retweet specific user', type=str)
@@ -72,15 +59,19 @@ def followNewFollowers():
     print "-----------------------"
 
 def getScreenNamesList():
-    terminal_screen_name_list = [str(item) for item in opts.list_names.split(',')]
-    print terminal_screen_name_list
+    terminal_screen_name_list = [str(item) for item in opts.list_id_screenname.split(',')]
+    #print terminal_screen_name_list
     return terminal_screen_name_list
 
 def getUsersId(screen_names):
     try:
+        print "--------------------------------------------------------"
+        print 'UserName: \t\t\t\tID:'
+        print "--------------------------------------------------------"
         for screen_name in screen_names:
             user = api.get_user(screen_name)
-            print 'UserName:"%s" ID: \t\t"%s"' % (user.name, user.id)
+            #print 'UserName:"%s" ID: \t\t"%s"' % (user.name, user.id)
+            print '"%s"\t\t\t\t"%s"' % (user.name, user.id)
         return True
     except TypeError:
         pass
@@ -94,6 +85,18 @@ def tweet_text(tweetvar):
     except:
         return False
     return True
+
+def follow_user(searchuser):
+    """searches tweets with searchterms, retweets, then follows"""
+    for tweet in tweepy.Cursor(api.search, q=searchuser).items(10):
+        try:
+            if not tweet.user.following:
+                tweet.user.follow()
+            return True
+        except tweepy.TweepError as e:
+            print(e.reason)
+            pass
+    return False
 
 def retweet_follow(searchterms):
     """searches tweets with searchterms, retweets, then follows"""
@@ -125,18 +128,21 @@ if __name__ == '__main__':
     opts = get_args()
     if opts.follow_new_followers:
         followNewFollowers()
-    elif opts.list_names:
-        print (opts.list_names)
+    elif opts.list_id_screenname:
+        #print (opts.list_id_screenname)
         list_from_terminal = getScreenNamesList()
         getUsersId(list_from_terminal)
     elif opts.tweet_text:
-        print opts.tweet_text 
+        #print opts.tweet_text 
         tweet_text(opts.tweet_text)
     elif opts.retweet_follow:
-        print opts.retweet_follow
+        #print opts.retweet_follow
         retweet_follow(opts.retweet_follow)
     elif opts.retweet_user:
-        print opts.retweet_user
+        #print opts.retweet_user
         retweet_user(opts.retweet_user)
+    elif opts.follow_user:
+        #print opts.follow_user
+        retweet_user(opts.follow_user)
     else: 
         print "Needs Argument"
