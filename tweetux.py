@@ -43,20 +43,20 @@ def Tweeter_Auth():
         api = tweepy.API(auth)
         return api
     else:
-        print "Must provide credentianls to login"
+        print("Must provide credentianls to login")
         return None
 
 #Follow new Followers -- Linked to user account creds
 def followNewFollowers():
-    print "-----------------------"
-    print "Adding users to follow:"
-    print "-----------------------"
-    for follower in tweepy.Cursor(api.followers).items():
+    print("-----------------------")
+    print("Adding users to follow:")
+    print("-----------------------")
+    for follower in list(tweepy.Cursor(api.followers).items()):
         follower.follow()
-        print follower.screen_name
-    print "-----------------------"
-    print "Process finished, See ya'"
-    print "-----------------------"
+        print(follower.screen_name)
+    print("-----------------------")
+    print("Process finished, See ya'")
+    print("-----------------------")
 
 def getScreenNamesList():
     terminal_screen_name_list = [str(item) for item in opts.list_id_screenname.split(',')]
@@ -65,18 +65,18 @@ def getScreenNamesList():
 
 def getUsersId(screen_names):
     try:
-        print "--------------------------------------------------------"
-        print 'UserName: \t\t\t\tID:'
-        print "--------------------------------------------------------"
+        print("--------------------------------------------------------")
+        print('UserName: \t\t\t\tID:')
+        print("--------------------------------------------------------")
         for screen_name in screen_names:
             user = api.get_user(screen_name)
             #print 'UserName:"%s" ID: \t\t"%s"' % (user.name, user.id)
-            print '"%s"\t\t\t\t"%s"' % (user.name, user.id)
+            print('"%s"\t\t\t\t"%s"' % (user.name, user.id))
         return True
     except TypeError:
         pass
-    except tweepy.TweepError, e:
-        print 'Error: %s' % (e)
+    except tweepy.TweepError as e:
+        print('Error: %s' % (e))
 
 def tweet_text(tweetvar):
     """ tweets text from input variable """
@@ -94,7 +94,7 @@ def follow_user(searchuser):
                 tweet.user.follow()
             return True
         except tweepy.TweepError as e:
-            print(e.reason)
+            print((e.reason))
             pass
     return False
 
@@ -107,7 +107,7 @@ def retweet_follow(searchterms):
                 tweet.user.follow()
             return True
         except tweepy.TweepError as e:
-            print(e.reason)
+            print((e.reason))
             pass
     return False
 
@@ -118,7 +118,7 @@ def retweet_user(searchuser):
             if (not tweet.retweeted) and ('RT @' not in tweet.text):
                 tweet.retweet()
         except tweepy.TweepError as e:
-            print(e.reason)
+            print((e.reason))
             pass
     return False
 
@@ -145,4 +145,4 @@ if __name__ == '__main__':
         #print opts.follow_user
         retweet_user(opts.follow_user)
     else: 
-        print "Needs Argument"
+        print("Needs Argument")

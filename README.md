@@ -21,4 +21,8 @@ optional arguments:
                         Retweet specific user
 
 tweetux.py -p -r/f/l/R/r
+
+UPDATE: Code was trasnformed from python 2 to python 3.x using library[1].
+
+[1].-https://docs.python.org/2/library/2to3.html
 ```
